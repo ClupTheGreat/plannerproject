@@ -34,7 +34,7 @@ function create_topic(topic_name){
 };
 
 function get_task_details_for_each_topic(topic_id){
-    let sql5 = `SELECT task_name, task_description, task_start_time, task_end_time
+    let sql5 = `SELECT task.task_id, task_name, task_description, task_start_time, task_end_time
     FROM task_detail
     JOIN task ON task.task_id = task_detail.task_id
     WHERE task_detail.topic_id = ?`;
@@ -115,6 +115,39 @@ function create_task_and_insert_task_detail(task_description, task_start_time, t
     });
 }
 
+function select_task(task_id){
+    let sql7 = 'SELECT task.task_name, task.task_detail_id, task_detail.task_description, task_detail.task_start_time, task_detail.task_end_time FROM task_detail JOIN task ON task.task_id = task_detail.task_id WHERE task_detail.task_id = ?';
+    return new Promise((resolve, reject)=>{
+        db.all(sql7,[task_id],(err,rows)=>{
+            if (err){
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+function edit_task(task_id, task_name, task_detail, start_time, end_time){
+    sql6 = 'UPDATE task_detail SET task_description = ?, task_start_time = ? , task_start_time = ? WHERE task_id = ?';
+    sql8 = 'UPDATE task SET task_name = ? WHERE task_id=?';
+    db.run(sql6, [task_detail, start_time, end_time, task_id], function (err) {
+        if (err) {
+            console.log(err.message);
+        } else {
+            //console.log('Task created successfully');
+        }
+    });
+
+    db.run(sql8, [task_name, task_id], function (err) {
+        if (err) {
+            console.log(err.message);
+        } else {
+            //console.log('Task created successfully');
+        }
+    });
+}
+
 
 
 
@@ -147,7 +180,7 @@ function create_task_and_insert_task_detail(task_description, task_start_time, t
 //};
 
 //exports all the function to be used in index.js
-module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details_for_each_topic};
+module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details_for_each_topic, select_task, edit_task};
 // export function a(){
 //     console.log("Exported func a");
 // }

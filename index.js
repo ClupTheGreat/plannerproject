@@ -62,7 +62,6 @@ app.get('/', (req,res)=>{
     .catch(error => {
         console.error(error); // log an error message if the Promises are rejected
     });
-
     res.render('pages/index',{names : topic_pages, all_tasks : all_tasks });
 });
 
@@ -102,8 +101,37 @@ app.post('/task_created', (req,res)=>{
     const task_end_time = req.body.task_end_time;
     const task_start_time = req.body.task_start_time[0];
     execute.create_task_and_insert_task_detail(task_description, task_start_time, task_end_time, task_name, topic_id);
-    res.redirect('/');
+    load_all_tables();
+    res.redirect('/?message=reload');
     
 });
 
+app.get('/editor', (req,res)=>{
+    res.render('pages/editor');
+});
+
+app.post('/editor', (req,res)=>{
+    const task_id = req.body.edit_request;
+  execute.select_task(task_id)
+    .then((task_data) => {
+      console.log(task_data);
+      res.render('pages/editor', { task_id, task_data });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+    });
+
+});
+
+app.post('/editor_process', (req, res)=>{
+    const task_name = req.body.task_name;
+    const task_detail = req.body.task_detail;
+    const start_time = req.body.start_time;
+    const end_time = req.body.end_time;
+    const task_id = req.body.task_id;
+    console.log(task_id);
+    execute.edit_task(task_id, task_name, task_detail, start_time, end_time);
+    res.redirect('/');
+});
 //get_time.log_time();

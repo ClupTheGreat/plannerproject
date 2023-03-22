@@ -11,40 +11,45 @@
     window.onload = function() {
     if(!window.location.hash) {
         window.location = window.location + '#loaded';
-        window.location.reload();
+        location.reload();
+    }}
+    if (window.location.href.includes('reload')) {
+    window.location.href = '/';
     }
+    function editor(){
+        window.location.href = 'editor.ejs';
     }
 </script>
 <body>
     
     <h1>Objectives</h1>
-    <div>
-        <form id="topic_tasks_form" action="/task_creator" method="post">
-          <% for (let i = 0; i < names.length; i++) { %>
-            <div class="button-div">
+    <div class="grid_container">
+        <% for (let i = 0; i < names.length; i++) { %>
+          <div class="topics">
+            <form id="topic_tasks_form" action="/task_creator" method="post">
               <button name="topic_id" value="<%= names[i].topic_id %>">
                 <%= names[i].topic_name %>
               </button>
-              <% const topicTasks = all_tasks.find(t => t.topic_id === names[i].topic_id) %>
-              <% if (topicTasks && topicTasks.tasks.length > 0) { %>
-                <div>
-                  <% topicTasks.tasks.forEach(task => { %>
-                    <div class="task_container">
-                        <span class="task_text"><%= task.task_name %>: <%= task.task_description %> (Start Time: <%= task.task_start_time %>, End Time: <%= task.task_end_time %>)</span>
-                        <button class="edit_button">Edit</button>
-                        <button class="completed_button">Task Completed</button>
-                        <button class="delete_button">Delete Task</button>
-                      </div>
+            </form>
+            <% const topicTasks = all_tasks.find(t => t.topic_id === names[i].topic_id) %>
+            <% if (topicTasks && topicTasks.tasks.length > 0) { %>
+              <div>
+                <% topicTasks.tasks.forEach(task => { %>
+                  <div class="task_container">
+                    <span class="task_text"><%= task.task_name %>: <%= task.task_description %> (Start Time: <%= task.task_start_time %>, End Time: <%= task.task_end_time %>)</span>
+                    <form action="/editor" method="post">
+                        <input type="hidden" name = "edit_request" value = "<%= task.task_id%>">
+                    <button class="edit_button">Edit</button>
+                    </form>
+                    <button class="completed_button">Task Completed</button>
+                    <button class="delete_button">Delete Task</button>
+                  </div>
                 <% }) %>
-                </div>
-              <% } %>
-            </div>
-          <% } %>
-        </form>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
       </div>
-    <div>
-    </form>
-    </div>
         <form action="/create_topic" method="post">
             <button type="submit" value="new_topic">
                 Create a topic

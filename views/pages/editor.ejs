@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task</title>
+</head>
+<body>
+    <form id = "edit_task_form" action="/editor_process" method="post" >
+    <h1>Edit Task</h1>
+    Task Name<input name="task_name" type="text" value="<%=task_data[0].task_name%>">
+    Task Detail<input name="task_detail" type="text" value="<%=task_data[0].task_description%>">
+    Start Time<input name="start_time" type="text" value="<%=task_data[0].task_start_time%>">
+    End Time<input name="end_time" type="text" value="<%=task_data[0].task_end_time%>">
+    <input name="task_id" type="hidden" value="<%=task_id%>">
+    <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
