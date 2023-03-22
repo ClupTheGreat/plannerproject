@@ -15,18 +15,55 @@ app.listen(port);
 
 let topic_id;
 let topic_pages=[];
+let all_tasks=[];
 
 //Runs a query to select all topics
-execute.run_query().then((data)=>{
-    topic_pages = data;
-});
-console.log(get_time.log_datetime());
 
-app.get('/', (req,res)=>{
+function load_all_tables(){
     execute.run_query().then((data)=>{
         topic_pages = data;
+        topic_pages.forEach(topic => {
+            execute.get_task_details_for_each_topic(topic.topic_id)
+                .then(rows => {
+                    // add the resulting rows array to the all_tasks array
+                    all_tasks.push({
+                        topic_id: topic.topic_id,
+                        tasks: rows
+                    });
+                })
+                .catch(error => {
+                    console.error(error); // log an error message if the Promise is rejected
+                });
+        });
     });
-    res.render('pages/index',{names : topic_pages});
+}
+
+load_all_tables();
+
+console.log(get_time.log_datetime());
+
+// execute.get_task_details_for_each_topic(3)
+//     .then(rows => {
+//         console.log(rows); // log the resulting rows array to the console
+//     })
+//     .catch(error => {
+//         console.error(error); // log an error message if the Promise is rejected
+//     });
+
+app.get('/', (req,res)=>{
+    load_all_tables();
+    Promise.all(topic_pages.map(topic => execute.get_task_details_for_each_topic(topic.topic_id)))
+    .then(results => {
+        all_tasks = results.map((tasks, index) => ({
+            topic_id: topic_pages[index].topic_id,
+            tasks
+        }));
+    })
+    .catch(error => {
+        console.error(error); // log an error message if the Promises are rejected
+    });
+
+    res.render('pages/index',{names : topic_pages, all_tasks : all_tasks });
 });
 
 app.post('/', (req,res)=>{
@@ -64,11 +101,6 @@ app.post('/task_created', (req,res)=>{
     const task_description = req.body.task_description;
     const task_end_time = req.body.task_end_time;
     const task_start_time = req.body.task_start_time[0];
-    console.log(task_name);
-    console.log(task_description);
-    console.log(task_end_time);
-    console.log(task_start_time);
-    console.log(topic_id);
     execute.create_task_and_insert_task_detail(task_description, task_start_time, task_end_time, task_name, topic_id);
     res.redirect('/');
     

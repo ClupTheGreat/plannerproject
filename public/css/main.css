@@ -1,0 +1,48 @@
+html,body {
+    font-family: "consolas","sans-serif";
+}
+
+
+.button-div {
+    margin-bottom: 10px;
+    font-family: inherit;
+}
+
+button {
+    font-family: inherit;
+}
+.task_container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 510px;
+    height: 200px;
+    margin: 10px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .task_text {
+    flex-grow: 1;
+  }
+  
+  .edit_button,
+  .completed_button,
+  .delete_button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #eee;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit_button:hover,
+  .completed_button:hover,
+  .delete_button:hover {
+    background-color: #ccc;
+  }
+  

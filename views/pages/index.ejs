@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progress Tacker</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <script>
     window.onload = function() {
@@ -12,30 +13,38 @@
         window.location = window.location + '#loaded';
         window.location.reload();
     }
-}
+    }
 </script>
 <body>
-
+    
     <h1>Objectives</h1>
-    <style>
-    .button-div {
-    margin-bottom: 10px;
-    }
-    </style>
-
     <div>
-        <form action="/task_creator" method="post">
-    <% for(let i=0; i <names.length; i++){%>
-        <div class="button-div">
-            <button name="topic_id" value="<%= names[i].topic_id %>">
+        <form id="topic_tasks_form" action="/task_creator" method="post">
+          <% for (let i = 0; i < names.length; i++) { %>
+            <div class="button-div">
+              <button name="topic_id" value="<%= names[i].topic_id %>">
                 <%= names[i].topic_name %>
               </button>
-        </div>
-    <%}%>
+              <% const topicTasks = all_tasks.find(t => t.topic_id === names[i].topic_id) %>
+              <% if (topicTasks && topicTasks.tasks.length > 0) { %>
+                <div>
+                  <% topicTasks.tasks.forEach(task => { %>
+                    <div class="task_container">
+                        <span class="task_text"><%= task.task_name %>: <%= task.task_description %> (Start Time: <%= task.task_start_time %>, End Time: <%= task.task_end_time %>)</span>
+                        <button class="edit_button">Edit</button>
+                        <button class="completed_button">Task Completed</button>
+                        <button class="delete_button">Delete Task</button>
+                      </div>
+                <% }) %>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
+        </form>
+      </div>
+    <div>
     </form>
     </div>
-
-    <div>
         <form action="/create_topic" method="post">
             <button type="submit" value="new_topic">
                 Create a topic

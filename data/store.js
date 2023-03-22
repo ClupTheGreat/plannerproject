@@ -4,22 +4,50 @@ const db = new sqlite.Database('./data/store.db',sqlite.OPEN_READWRITE, (err) =>
     if (err) return console.error(err);
 });
 
-sql = 'CREATE TABLE IF NOT EXISTS topic (topic_id INTEGER PRIMARY KEY, topic_name)';
-db.run(sql);
-sql = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description, task_start_time DATETIME, task_end_time DATETIME)';
-db.run(sql);
-sql = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name, task_detail_id, topic_id, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id), CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id))';
-db.run(sql);
+
+// Creates all tables
+sqltopic = 'CREATE TABLE IF NOT EXISTS topic (topic_id INTEGER PRIMARY KEY, topic_name TEXT)'
+sqltask_detail = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description TEXT, task_start_time DATETIME, task_end_time DATETIME, task_id INTEGER, topic_id INTEGER, CONSTRAINT task_id_fk FOREIGN KEY (task_id) REFERENCES task(task_id), CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id))'
+sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id), CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id))'
+db.run(sqltopic);
+db.run(sqltask_detail);
+db.run(sqltask);
+
+// sqltopic = 'DROP TABLE topic'
+// sqltask_detail = 'DROP TABLE task'
+// sqltask = 'DROP TABLE task_detail'
+// db.run(sqltopic);
+// db.run(sqltask_detail);
+// db.run(sqltask);
+
 
 // function a (vals){
 //     vals = 'Hello';
 // };
 
+//Creates a topic
 function create_topic(topic_name){
     sql = 'INSERT INTO topic (topic_name) values (?)';
     db.run(sql,[topic_name],(err)=>{
         if (err) return console.log(err);
     });
+};
+
+function get_task_details_for_each_topic(topic_id){
+    let sql5 = `SELECT task_name, task_description, task_start_time, task_end_time
+    FROM task_detail
+    JOIN task ON task.task_id = task_detail.task_id
+    WHERE task_detail.topic_id = ?`;
+    return new Promise((resolve, reject)=>{
+        db.all(sql5,[topic_id],(err,rows)=>{
+            if (err){
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
 };
 
 // function create_task_and_details(task_name, topic_id, task_description, task_start_time, task_end_time){
@@ -34,6 +62,7 @@ function create_topic(topic_name){
     
 // };
 
+//Selects all topics and returns them, used promise as its an async function and will only return when query is run or throw an error
 function run_query(){
     return new Promise((resolve, reject)=>{
         sql = 'SELECT * FROM topic';
@@ -46,21 +75,40 @@ function run_query(){
     });
 };
 
+
+//Inserts into task and task_detail, uses this.lastID to get the last executed id as that id is auto-generated, uses that id to insert into task and its foreign keys.
 function create_task_and_insert_task_detail(task_description, task_start_time, task_end_time, task_name, topic_id) {
-    let task_detail_id = 0;
+    let task_detail_id = 0; //Initating variable so it will be used in the next query
     const sql1 = 'INSERT INTO task_detail (task_description, task_start_time, task_end_time) VALUES (?, ?, ?)';
     db.run(sql1, [task_description, task_start_time, task_end_time], function (err) {
         if (err) {
             console.log(err.message);
-        } else {
+        } else { //running query inside this section ensures that sql2 query is run when sql1 query is executed.
             task_detail_id = this.lastID;
-            console.log(`Task detail ID: ${task_detail_id}`);
+            //console.log(`Task detail ID: ${task_detail_id}`);
             const sql2 = 'INSERT INTO task (task_name, task_detail_id, topic_id) VALUES (?, ?, ?)';
             db.run(sql2, [task_name, task_detail_id, topic_id], function (err) {
                 if (err) {
                     console.log(err.message);
                 } else {
+                    const task_id = this.lastID;
+                    const sql3 = 'UPDATE task_detail SET task_id = ? WHERE task_detail_id = ?';
+                    const sql4 = 'UPDATE task_detail SET topic_id = ? WHERE task_detail_id = ?';
                     console.log('Task created successfully');
+                    db.run(sql3, [task_id, task_detail_id], function (err) {
+                        if (err) {
+                            console.log(err.message);
+                        } else {
+                            //console.log('Task created successfully');
+                        }
+                    });
+                    db.run(sql4, [topic_id, task_detail_id], function (err) {
+                        if (err) {
+                            console.log(err.message);
+                        } else {
+                            //console.log('Task created successfully');
+                        }
+                    });
                 }
             });
         }
@@ -98,7 +146,8 @@ function create_task_and_insert_task_detail(task_description, task_start_time, t
     // return result;
 //};
 
-module.exports = {create_topic, create_task_and_insert_task_detail, run_query};
+//exports all the function to be used in index.js
+module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details_for_each_topic};
 // export function a(){
 //     console.log("Exported func a");
 // }
