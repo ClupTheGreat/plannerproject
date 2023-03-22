@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Create a Task</title>
+</head>
+<body>
+    <h1>Create a task</h1>
+    <%=topic_nm%>
+    <form action="/task_created" method="post">
+        Task Name<input type="text" name="task_name"/><br>
+        Task Detail<input type="text" name="task_description"/><br>
+        Task Start<input type="text" name="task_start_time" placeholder="yyyy-mm-dd"/><br>
+        Task End Date<input type="text" name="task_end_time" placeholder="yyyy-mm-dd"/><br>
+        <input type="hidden" name="task_start_time"/><br>
+        <button type="submit"> Create</button>
+    </form>
+</body>
+</html>

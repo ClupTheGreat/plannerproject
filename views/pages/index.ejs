@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tacker</title>
+</head>
+<script>
+    window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
+</script>
+<body>
+
+    <h1>Objectives</h1>
+    <style>
+    .button-div {
+    margin-bottom: 10px;
+    }
+    </style>
+
+    <div>
+        <form action="/task_creator" method="post">
+    <% for(let i=0; i <names.length; i++){%>
+        <div class="button-div">
+            <button name="topic_id" value="<%= names[i].topic_id %>">
+                <%= names[i].topic_name %>
+              </button>
+        </div>
+    <%}%>
+    </form>
+    </div>
+
+    <div>
+        <form action="/create_topic" method="post">
+            <button type="submit" value="new_topic">
+                Create a topic
+            </button>
+            
+        </form>
+    </div>
+</body>
+</html>
