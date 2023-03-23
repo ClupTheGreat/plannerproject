@@ -1,61 +1,183 @@
 html,body {
     font-family: "consolas","sans-serif";
     width: 100%;
+    /*overflow-x: hidden;*/
+    background-color: #0F172A;
+    color: white;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+}
+
+.sidebar{
+    position: fixed;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background: #141E33;
+}
+
+.sidebar header{
+    display: block;
+    font-size: 22px;
+    text-align: center;
+    line-height: 70px;
+    background-color: #063146;
+    font-weight: bold;
+
+}
+
+.create_topic {
+    height: 33px;
+    width: 250px;
+    background-color: white;
+    background-image: '/img/radio_select.jpg';
+}
+
+.create_topic:checked{
+    background-image: '/img/radio_select.jpg';
+}
+
+.sidebar .topics {
+    font-family: inherit;
+    padding-top: 20px;
+    border-radius: 200px;
+    text-align: center;
+}
+
+.sidebar .topics .topic_name_button{
+    color: #94A3B8;
+    font-size: 20px;
+    text-align: center;
+    width: 100%;
+    border: none;
+    padding: 15px;
+    margin-top:2px;
+    background-color: #141E33;
+    text-align: left;
+}
+.sidebar .topics .topic_name_button:hover{
+    background-color: #1A253A;
+    border-right: #E2E8F0;
+}
+section {
+    margin-left: 270px;
 }
 
 .grid_container {
+    padding-top: 1.5rem;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    padding-left: 10%;
-    padding-right: 10%;
+    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    /*display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr) );
+    width: 100%;*/
+
 }
 
 .task_container {
-    grid-column: 2/3;
-    grid-row: 1/2;
-
+    /*display: inline-flex;
+    flex-direction: column;*/
+    width: 90%;
+    height: 200px;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #141E33;
+    
 }
 
-.topics {
-    margin-bottom: 10px;
-    font-family: inherit;
+.task_container:hover{
+    background-color: #5B21B6;
 }
+
+.create_task_container{
+    display: inline-flex;
+    flex-direction: column;
+    width: 90%;
+    height: 200px;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid rgb(11, 155, 212);
+    border-radius: 5px;
+    border-style: dashed;
+    background-color: transparent;
+    align-items: center;
+    justify-content: center;
+}
+
+.create_task_container button {
+    width: 100%;
+    height: 200px;
+    background: transparent;
+    border: transparent;
+    font-size: 30px;
+    color: aqua;
+}
+
 
 button {
     font-family: inherit;
 }
-.task_container {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 420px;
-    height: 200px;
-    margin: 10px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+
+.task_name{
+    margin-left: 3%;
+    margin-top: 2.5%;
+    margin-bottom: 15px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    color: #E2E8F0;
+}
   
-  .task_text {
+.task_description {
+    margin-left: 3%;
     flex-grow: 1;
-  }
+    color: #C4B5F9;
+}
+
+.task_end_time {
+    margin-left: 3%;
+    color: #C4B5F9;
+}
+
+.line{
+    border-bottom: 2px dashed #6D28D9;
+    margin: 10px;
+}
   
-  .edit_button,
-  .completed_button,
-  .delete_button {
+.edit_button,
+.completed_button,
+.delete_button {
+    display: inline-block;
     margin-left: 10px;
     padding: 5px 10px;
     background-color: #eee;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-  }
+    background-color: slateblue;
+}
+.edit_form{
+    display: inline-block;
+}
+hr{
+    border-top: 1px dotted #6D28D9;
+    background-color: transparent;
+    padding-right: 10px;
+}
   
-  .edit_button:hover,
-  .completed_button:hover,
-  .delete_button:hover {
-    background-color: #ccc;
-  }
+.edit_button:hover,
+.completed_button:hover,
+.delete_button:hover {
+    background-color: #FF8C00;
+}
+
   

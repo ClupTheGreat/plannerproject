@@ -33,8 +33,8 @@ function create_topic(topic_name){
     });
 };
 
-function get_task_details_for_each_topic(topic_id){
-    let sql5 = `SELECT task.task_id, task_name, task_description, task_start_time, task_end_time
+function get_task_details(topic_id){
+    let sql5 = `SELECT task.task_id, task_name, task_description, task_start_time, task_end_time, task.topic_id
     FROM task_detail
     JOIN task ON task.task_id = task_detail.task_id
     WHERE task_detail.topic_id = ?`;
@@ -180,7 +180,7 @@ function edit_task(task_id, task_name, task_detail, start_time, end_time){
 //};
 
 //exports all the function to be used in index.js
-module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details_for_each_topic, select_task, edit_task};
+module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details, select_task, edit_task};
 // export function a(){
 //     console.log("Exported func a");
 // }
