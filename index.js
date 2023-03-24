@@ -4,13 +4,13 @@ const get_time = require('./public/js/get_time.js')
 const express = require('express');
 const bodyParser = require('body-parser');
 var ejs = require('ejs');
-
 const app = express();
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-
 app.listen(port);
 
 let topic_id;
@@ -68,20 +68,35 @@ all_tasks=[];
 console.log(get_time.log_datetime());
 
 app.get('/', async (req,res)=>{
+  const data = req.query.data;
+  // Check if the 'data' parameter is present and has a non-empty value
+  if (data) {
+    // Handle the request with the 'data' parameter
+    current_topic=data;
+    console.log(current_topic);
+    all_tasks=[];
     await load_all_tables();
     res.render('pages/index',{names : topic_pages, all_tasks : all_tasks[0], current_topic : current_topic });
+  } else {
+    // Handle the request without the 'data' parameter
+    await load_all_tables();
+    res.render('pages/index',{names : topic_pages, all_tasks : all_tasks[0], current_topic : current_topic });
+  }
+    // 
+    // 
 });
 // app.get('/', (req,res)=>{
 //     load_all_tables();
 //     res.render('pages/index',{names : topic_pages, all_tasks : all_tasks[0], current_topic : current_topic });
 // });
 
-app.post('/', (req,res)=>{
+app.post('/', async (req,res)=>{
+    await load_all_tables();
     res.redirect('/');
 });
 
 app.get('/create_topic', (req,res)=>{
-    res.render('pages/create_topic');
+    res.render('pages/create_topic',{names:topic_pages});
 });
 
 app.post('/create_topic', (req,res)=>{
@@ -89,9 +104,20 @@ app.post('/create_topic', (req,res)=>{
     
 });
 
+app.post('/topic_creator', (req,res)=>{
+    const topic_name = req.body.topic_name;
+    if (topic_name) {
+      console.log(topic_name)
+      execute.create_topic(topic_name);
+      res.redirect('/');
+    } else {
+      res.redirect('/');
+    }
+});
+
 app.get('/task_creator', (req,res)=>{
     //execute.create_topic(topic_name);
-    res.render('pages/task_creator',{topic_nm : topic_id});
+    res.render('pages/task_creator',{topic_nm : topic_id, names : topic_pages});
 });
 
 app.post('/task_creator', (req,res)=>{
@@ -107,8 +133,11 @@ app.post('/task_created', (req,res)=>{
     const task_end_time = req.body.task_end_time;
     const task_start_time = req.body.task_start_time[0];
     execute.create_task_and_insert_task_detail(task_description, task_start_time, task_end_time, task_name, topic_id);
+    current_topic = req.body.hidden_topic_id;
+    all_tasks=[];
+    
     load_all_tables().then(() => {
-      res.redirect('/?message=reload');
+      res.redirect(`/?message=reload&data=${topic_id}`);
     });
   });
 
@@ -131,7 +160,7 @@ app.post('/task_created', (req,res)=>{
 // });
 
 app.get('/editor', (req,res)=>{
-    res.render('pages/editor');
+    res.render('pages/editor',{names:topic_pages});
 });
 
 app.post('/editor', (req,res)=>{
@@ -139,7 +168,7 @@ app.post('/editor', (req,res)=>{
   execute.select_task(task_id)
     .then((task_data) => {
       console.log(task_data);
-      res.render('pages/editor', { task_id, task_data });
+      res.render('pages/editor', { task_id, task_data, names:topic_pages});
     })
     .catch((err) => {
       console.error(err);
@@ -163,9 +192,17 @@ app.post('/change_topic',(req,res)=>{
     current_topic = req.body.hidden_topic_id;
     all_tasks=[];
     load_all_tables().then(() => {
+      console.log(all_tasks);
       res.redirect('/');
     });
   });
+
+app.post('/delete_task',(req,res)=>{
+    var task_id_del = req.body.task_id_del;
+    console.log(task_id_del)
+    execute.delete_task(task_id_del);
+    res.redirect(`/?message=reload&data=1`);
+});
 
 // app.post('/change_topic',(req,res)=>{
 //     current_topic = req.body.hidden_topic_id;

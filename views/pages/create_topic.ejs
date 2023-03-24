@@ -5,12 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a topic</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <h1>Create a topic</h1>
-    <form action="/" method="post">
-        <input type="text" name="topic_name"/><br>
-        <button type="submit"> Create</button>
+    <div class="sidebar">
+    <%-include('sidebar_view')%>
+    </div>
+    <div class="gap"></div>
+    <div class="create_topic">
+    <h1>CREATE A TOPIC</h1>
+    <form action="/topic_creator" method="post">
+        <input type="text" name="topic_name" class="create_topic_text"/><br>
+        <button type="submit" class="edit_button"> CREATE</button>
     </form>
+</div>
 </body>
 </html>

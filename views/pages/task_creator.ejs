@@ -5,17 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
     <title>Create a Task</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <h1>Create a task</h1>
-    <%=topic_nm%>
+    <div class="sidebar">
+        <%-include('sidebar_view')%>
+        </div>
+        <div class="gap"></div>
+        <div class="create_topic">
+    <h1>CREATE A TASK</h1>
     <form action="/task_created" method="post">
-        Task Name<input type="text" name="task_name"/><br>
-        Task Detail<input type="text" name="task_description"/><br>
-        Task Start<input type="text" name="task_start_time" placeholder="yyyy-mm-dd"/><br>
-        Task End Date<input type="text" name="task_end_time" placeholder="yyyy-mm-dd"/><br>
-        <input type="hidden" name="task_start_time"/><br>
-        <button type="submit"> Create</button>
+        Task Name <input class="create_topic_text" type="text" name="task_name"/><br>
+        Task Detail <input class="create_topic_text" type="text" name="task_description"/><br>
+        Task Start <input class="create_topic_text" type="text" name="task_start_time" placeholder="yyyy-mm-dd"/><br>
+        Task End Date <input class="create_topic_text" type="text" name="task_end_time" placeholder="yyyy-mm-dd"/><br>
+        <input type="hidden" name="hidden_topic_id" value="<%=topic_nm%>"/><br>
+        <button class="completed_button" type="submit"> Create</button>
     </form>
+</div>
 </body>
 </html>

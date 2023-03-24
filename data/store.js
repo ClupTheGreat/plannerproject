@@ -6,9 +6,12 @@ const db = new sqlite.Database('./data/store.db',sqlite.OPEN_READWRITE, (err) =>
 
 
 // Creates all tables
+// sqltopic = 'CREATE TABLE IF NOT EXISTS topic (topic_id INTEGER PRIMARY KEY, topic_name TEXT)'
+// sqltask_detail = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description TEXT, task_start_time DATETIME, task_end_time DATETIME, task_id INTEGER, topic_id INTEGER, CONSTRAINT task_id_fk FOREIGN KEY (task_id) REFERENCES task(task_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
+// sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
 sqltopic = 'CREATE TABLE IF NOT EXISTS topic (topic_id INTEGER PRIMARY KEY, topic_name TEXT)'
-sqltask_detail = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description TEXT, task_start_time DATETIME, task_end_time DATETIME, task_id INTEGER, topic_id INTEGER, CONSTRAINT task_id_fk FOREIGN KEY (task_id) REFERENCES task(task_id), CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id))'
-sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id), CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id))'
+sqltask_detail = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description TEXT, task_start_time DATETIME, task_end_time DATETIME, task_id INTEGER, topic_id INTEGER, CONSTRAINT task_id_fk FOREIGN KEY (task_id) REFERENCES task(task_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
+sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
 db.run(sqltopic);
 db.run(sqltask_detail);
 db.run(sqltask);
@@ -148,6 +151,22 @@ function edit_task(task_id, task_name, task_detail, start_time, end_time){
     });
 }
 
+function delete_task(task_id){
+    sql9 = 'DELETE FROM task WHERE task_id = ?';
+    db.run(sql9,[task_id], (error)=>{
+        if (error){
+        } else {
+        }
+    });
+    sql10 = 'DELETE FROM task_detail WHERE task_id = ?';
+    db.run(sql10,[task_id], (error)=>{
+        if (error){
+        } else {
+        }
+    });
+
+}
+
 
 
 
@@ -180,7 +199,7 @@ function edit_task(task_id, task_name, task_detail, start_time, end_time){
 //};
 
 //exports all the function to be used in index.js
-module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details, select_task, edit_task};
+module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details, select_task, edit_task, delete_task};
 // export function a(){
 //     console.log("Exported func a");
 // }

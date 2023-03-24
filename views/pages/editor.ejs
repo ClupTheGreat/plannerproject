@@ -5,17 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Task</title>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
+    <div class="sidebar">
+        <%-include('sidebar_view')%>
+    </div>
+    <div class="gap">
+    </div>
+    <div class="create_topic">
     <form id = "edit_task_form" action="/editor_process" method="post" >
-    <h1>Edit Task</h1>
-    Task Name<input name="task_name" type="text" value="<%=task_data[0].task_name%>">
-    Task Detail<input name="task_detail" type="text" value="<%=task_data[0].task_description%>">
-    Start Time<input name="start_time" type="text" value="<%=task_data[0].task_start_time%>">
-    End Time<input name="end_time" type="text" value="<%=task_data[0].task_end_time%>">
+    <h1>EDIT TASK </h1>
+    <div>TASK NAME <input class="create_topic_text" name="task_name" type="text" value="<%=task_data[0].task_name%>"></div>
+    <div>TASK DETAIL <input class="create_topic_text" name="task_detail" type="text" value="<%=task_data[0].task_description%>"></div>
+    <div>START TIME <input class="create_topic_text" name="start_time" type="text" value="<%=task_data[0].task_start_time%>"></div>
+    <div>END TIME <input class="create_topic_text" name="end_time" type="text" value="<%=task_data[0].task_end_time%>"></div>
     <input name="task_id" type="hidden" value="<%=task_id%>">
-    <button type="submit">Submit</button>
+    <button class="completed_button" type="submit">Submit</button>
     </form>
+    </div>
 </body>
 </html>
 

@@ -20,70 +20,18 @@
     function editor(){
         window.location.href = 'editor.ejs';
     }
-
     document.getElementById('lol').submit();
 </script>
 <body>
   
     <div class = "sidebar">
-        <header>Topics</header>
-        <div class="topics">
-            <div>
-                <button>Create a task</button>
-            </div>
-        <% for (let i = 0; i < names.length; i++) { %>
-              <form id="topic_tasks_form" action="/change_topic" method="post">
-                <input name="hidden_topic_id" type="hidden" value="<%=names[i].topic_id%>"></input>
-                <button class = "topic_name_button" name="topic_name_button">
-                  <%= names[i].topic_name %>
-                  <%=names[i].topic_id%>
-                </button>
-              </form>
-              <%}%>
-            </div>
-            <div>
-            <form action="/create_topic" method="post">
-              <button type="submit" value="new_topic">
-                  Create a topic
-              </button>
-              
-          </form>
-        </div>
+        <%-include('sidebar_view')%>
     </div>
     <section>
       <div>
         Topic id <%=current_topic%>
       </div>
-      <div class="grid_container">
-        <% if (all_tasks) {
-          all_tasks.tasks.forEach(n =>{%>
-             <div class="task_container">
-             <div class="task_name"><%=n.task_name%></div>
-             <div class="task_description"><%=n.task_description%></div>
-             <div class="task_end_time"><%=n.task_end_time%></div>
-             <div class="line"></div>
-             <div>
-               <form action="/editor" method="post" class="edit_form">
-                 <input type="hidden" name = "edit_request" value = "<%= n.task_id%>">
-                 <button class="edit_button">Edit</button>
-                 </form>
-                 <button class="completed_button">Task Completed</button>
-                 <button class="delete_button">Delete Task</button>
-               </div>
-             </div>
-             <%})
-        } %>
-        <div class="create_task_container">
-        <form id="topic_tasks_form" action="/task_creator" method="post" style="width: 100%;height: 100%;">
-
-            <input type="hidden" name="topic_id_current" value="<%=current_topic%>"/>
-
-        <button type="submit" class="new_task_button">
-          Add new task
-        </button>
-        </form>
-      </div>
-  </div>
+      <%-include('task_view')%>
 </section>
 </body>
 </html>

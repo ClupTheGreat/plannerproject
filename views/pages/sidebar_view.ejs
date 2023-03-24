@@ -1,0 +1,18 @@
+<header>TOPICS</header>
+        <div class="topics">
+        <% for (let i = 0; i < names.length; i++) { %>
+              <form id="topic_tasks_form" action="/change_topic" method="post">
+                <input name="hidden_topic_id" type="hidden" value="<%=names[i].topic_id%>"></input>
+                <button class = "topic_name_button" name="topic_name_button">
+                  <%= names[i].topic_name %>
+                </button>
+              </form>
+              <%}%>
+            </div>
+            <div>
+            <form action="/create_topic" method="post">
+              <button type="submit" value="new_topic" class="edit_button">
+                  CREATE A TOPIC
+              </button>
+          </form>
+        </div>
