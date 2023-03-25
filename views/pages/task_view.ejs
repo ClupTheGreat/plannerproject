@@ -4,14 +4,20 @@
          <div class="task_container">
          <div class="task_name"><%=n.task_name%></div>
          <div class="task_description"><%=n.task_description%></div>
-         <div class="task_end_time"><%=n.task_end_time%></div>
+         <div class="task_end_time"><%= n.task_status === 1 ? 'FINISHED:' : 'DEADLINE: ' %> <%=n.task_end_time%></div>
          <div class="line"></div>
          <div class="form_edit_buttons">
+          <form action="/change_status" method="post" class="edit_form">
+            <input type="hidden" name = "task_stat_id" value = "<%= n.task_id%>">
+            <input type="hidden" name = "task_status_num" value = "<%= n.task_status%>">
+            <button class="completed_button" name="task_status" value="<%= n.task_status %>">
+              <%= n.task_status === 1 ? 'COMPLETE' : 'INCOMPLETE' %>
+          </form>
+          
            <form action="/editor" method="post" class="edit_form">
              <input type="hidden" name = "edit_request" value = "<%= n.task_id%>">
              <button class="edit_button">EDIT</button>
              </form>
-             <button class="completed_button">TASK COMPLETED</button>
              <form action="/delete_task" method="post" class="delete_form_class">
               <input type="hidden" name="task_id_del" value="<%= n.task_id %>">
               <input type="hidden" name="topic_id_current" value="<%=current_topic%>"/>
@@ -27,7 +33,7 @@
         <input type="hidden" name="topic_id_current" value="<%=current_topic%>"/>
 
     <button type="submit" class="new_task_button">
-      Add new task
+      ADD NEW TASK
     </button>
     </form>
   </div>

@@ -41,28 +41,6 @@ function load_all_tables() {
     });
   };
 
-// function load_all_tables(){
-//     console.log(current_topic);
-//     console.log('----');
-//     execute.run_query().then((data)=>{
-//         topic_pages = data;
-//         execute.get_task_details(current_topic)
-//                 .then(rows => {
-//                     // add the resulting rows array to the all_tasks array
-//                     all_tasks.push({
-//                         tasks: rows
-//                     });
-//                     //(JSON.stringify (all_tasks[0console.log])); This gives a dictonary with current tasks all_tasks[0].tasks[i] lists out task i
-//                 })
-//                 .catch(error => {
-//                     console.error(error); // log an error message if the Promise is rejected
-//                 });
-                
-//             });
-// };
-
-
-// load_all_tables();
 all_tasks=[];
 
 console.log(get_time.log_datetime());
@@ -82,13 +60,8 @@ app.get('/', async (req,res)=>{
     await load_all_tables();
     res.render('pages/index',{names : topic_pages, all_tasks : all_tasks[0], current_topic : current_topic });
   }
-    // 
-    // 
 });
-// app.get('/', (req,res)=>{
-//     load_all_tables();
-//     res.render('pages/index',{names : topic_pages, all_tasks : all_tasks[0], current_topic : current_topic });
-// });
+
 
 app.post('/', async (req,res)=>{
     await load_all_tables();
@@ -141,24 +114,6 @@ app.post('/task_created', (req,res)=>{
     });
   });
 
-// app.post('/task_created', (req,res)=>{
-//     const task_name = req.body.task_name;
-//     const task_description = req.body.task_description;
-//     const task_end_time = req.body.task_end_time;
-//     const task_start_time = req.body.task_start_time[0];
-//     execute.create_task_and_insert_task_detail(task_description, task_start_time, task_end_time, task_name, topic_id);
-//     all_tasks=[];
-//     load_all_tables()
-//       .then(() => {
-//         res.redirect('/?message=reload');
-//       })
-//       .catch(error => {
-//         console.error(error);
-//         res.status(500).send('Internal Server Error');
-//       });
-    
-// });
-
 app.get('/editor', (req,res)=>{
     res.render('pages/editor',{names:topic_pages});
 });
@@ -204,12 +159,19 @@ app.post('/delete_task',(req,res)=>{
     res.redirect(`/?message=reload&data=1`);
 });
 
-// app.post('/change_topic',(req,res)=>{
-//     current_topic = req.body.hidden_topic_id;
-//     all_tasks=[];
-//     load_all_tables();
-//     res.redirect('/');
-// });
+app.post('/change_status', (req,res)=>{
+    let status = req.body.task_status;
+    let task_id = req.body.task_stat_id;
+    if (status == 1){
+      execute.change_status(0, topic_id);
+    } else {
+      execute.change_status(1, topic_id);
+    }
+    res.redirect(`/?message=reload&data=1`);
+});
 
-
-//get_time.log_time();
+app.post('/delete_topic',(req,res)=>{
+  let topic_id = req.body.hidden_topic_id;
+  execute.delete_topic(topic_id);
+  res.redirect(`/?message=reload&data=1`);
+});

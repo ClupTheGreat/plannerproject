@@ -15,10 +15,6 @@
     }}
     if (window.location.href.includes('reload')) {
     window.location.href = '/';
-    
-    }
-    function editor(){
-        window.location.href = 'editor.ejs';
     }
     document.getElementById('lol').submit();
 </script>
@@ -28,9 +24,7 @@
         <%-include('sidebar_view')%>
     </div>
     <section>
-      <div>
-        Topic id <%=current_topic%>
-      </div>
+      <div></div>
       <%-include('task_view')%>
 </section>
 </body>

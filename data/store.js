@@ -1,17 +1,14 @@
 const sqlite = require('sqlite3').verbose();
 let sql;
-const db = new sqlite.Database('./data/store.db',sqlite.OPEN_READWRITE, (err) => {
+const db = new sqlite.Database('./data/store1.db',sqlite.OPEN_READWRITE, (err) => {
     if (err) return console.error(err);
 });
 
 
 // Creates all tables
-// sqltopic = 'CREATE TABLE IF NOT EXISTS topic (topic_id INTEGER PRIMARY KEY, topic_name TEXT)'
-// sqltask_detail = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description TEXT, task_start_time DATETIME, task_end_time DATETIME, task_id INTEGER, topic_id INTEGER, CONSTRAINT task_id_fk FOREIGN KEY (task_id) REFERENCES task(task_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
-// sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
 sqltopic = 'CREATE TABLE IF NOT EXISTS topic (topic_id INTEGER PRIMARY KEY, topic_name TEXT)'
 sqltask_detail = 'CREATE TABLE IF NOT EXISTS task_detail (task_detail_id INTEGER PRIMARY KEY, task_description TEXT, task_start_time DATETIME, task_end_time DATETIME, task_id INTEGER, topic_id INTEGER, CONSTRAINT task_id_fk FOREIGN KEY (task_id) REFERENCES task(task_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
-sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
+sqltask = 'CREATE TABLE IF NOT EXISTS task (task_id INTEGER PRIMARY KEY, task_name TEXT, task_detail_id INTEGER, topic_id INTEGER, task_status INTEGER, CONSTRAINT task_detail_id_fk FOREIGN KEY (task_detail_id) REFERENCES task_detail(task_detail_id) ON DELETE CASCADE, CONSTRAINT topic_id_fk FOREIGN KEY (topic_id) REFERENCES topic(topic_id) ON DELETE CASCADE)'
 db.run(sqltopic);
 db.run(sqltask_detail);
 db.run(sqltask);
@@ -37,7 +34,7 @@ function create_topic(topic_name){
 };
 
 function get_task_details(topic_id){
-    let sql5 = `SELECT task.task_id, task_name, task_description, task_start_time, task_end_time, task.topic_id
+    let sql5 = `SELECT task.task_id, task_name, task_description, task_start_time, task_end_time, task.topic_id, task_status
     FROM task_detail
     JOIN task ON task.task_id = task_detail.task_id
     WHERE task_detail.topic_id = ?`;
@@ -167,6 +164,42 @@ function delete_task(task_id){
 
 }
 
+function change_status(status, task_id){
+    sql11 = 'UPDATE task SET task_status = ? WHERE task_id = ?';
+    db.run(sql11,[status, task_id], (error)=>{
+        if (error){
+            console.log(error);
+        } else {
+        }
+    });
+}
+
+function delete_topic(topic_id){
+    sql12='DELETE FROM topic WHERE topic_id = ?';
+    sql13='DELETE FROM task WHERE topic_id = ?';
+    sql14='DELETE FROM task_detail WHERE topic_id = ?';
+    db.run(sql12,[topic_id], (error)=>{
+        if (error){
+            console.log(error);
+        } else {
+        }
+    });
+    db.run(sql13,[topic_id], (error)=>{
+        if (error){
+            console.log(error);
+        } else {
+        }
+    });
+    db.run(sql14,[topic_id], (error)=>{
+        if (error){
+            console.log(error);
+        } else {
+        }
+    });
+
+
+}
+
 
 
 
@@ -199,7 +232,7 @@ function delete_task(task_id){
 //};
 
 //exports all the function to be used in index.js
-module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details, select_task, edit_task, delete_task};
+module.exports = {create_topic, create_task_and_insert_task_detail, run_query, get_task_details, select_task, edit_task, delete_task, change_status, delete_topic};
 // export function a(){
 //     console.log("Exported func a");
 // }

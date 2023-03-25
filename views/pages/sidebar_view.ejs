@@ -7,6 +7,12 @@
                   <%= names[i].topic_name %>
                 </button>
               </form>
+              <form action="/delete_topic" method="post">
+                <input name="hidden_topic_id" type="hidden" value="<%=names[i].topic_id%>"></input>
+                <button type="submit" name="delete_topic" class="edit_button">
+                    DELETE
+                </button>
+            </form>
               <%}%>
             </div>
             <div>
